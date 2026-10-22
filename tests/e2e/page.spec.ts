@@ -7,6 +7,11 @@ test('renders 9 step sections in order', async ({ page }) => {
   await expect(page.locator('section[data-step]').first()).toHaveAttribute('id', 'step-0');
 });
 
+test('extra detail toggle is labeled 더 알아보기', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#step-3 summary')).toContainText('더 알아보기');
+});
+
 test.describe('without JS', () => {
   test.use({ javaScriptEnabled: false });
 

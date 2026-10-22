@@ -62,3 +62,8 @@
 .term:focus-within [role='tooltip'] {
   @apply block;
 }
+
+/* JS가 있으면 칩 바로 아래(공간이 없으면 위)에 띄운다. 좌표는 src/scripts/term-tooltip.ts가 넣는다. */
+.term [role='tooltip'].is-floating {
+  @apply fixed mt-0 w-[min(18rem,calc(100vw-1rem))];
+}

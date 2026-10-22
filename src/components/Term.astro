@@ -7,7 +7,8 @@ interface Props {
 }
 
 const { termKey, label } = Astro.props;
+const { full, ko } = glossary[termKey];
 const id = `term-${termKey}-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<span class="term" tabindex="0" aria-describedby={id}>{label}<span role="tooltip" id={id}>{glossary[termKey].ko}</span></span>
+<span class="term" tabindex="0" aria-describedby={id}>{label}<span role="tooltip" id={id}>{full && <span class="mb-0.5 block font-semibold">{full}</span>}{ko}</span></span>
