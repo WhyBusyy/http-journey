@@ -1,0 +1,44 @@
+---
+import type { Step } from '../data/types';
+import Prose from './Prose.astro';
+
+interface Props {
+  step: Step;
+}
+
+const { step } = Astro.props;
+---
+
+<section id={`step-${step.index}`} data-step={step.index} class="mx-auto max-w-2xl scroll-mt-16 px-6 py-20">
+  <p class="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">
+    Step {step.index} · <span class="text-accent tabular-nums">+{step.ms}ms</span>
+  </p>
+  <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{step.title}</h2>
+  <p class="mt-2 text-slate-500 dark:text-slate-400">{step.summary}</p>
+
+  <div data-diagram class="card-base mt-8">
+    <slot name="diagram" />
+  </div>
+
+  <div class="mt-6 space-y-4 text-[15px] sm:text-base">
+    <Prose text={step.body} />
+  </div>
+
+  <details class="group mt-6">
+    <summary class="cursor-pointer list-none text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
+      <span class="group-open:hidden">＋ 더 깊이 보기</span><span class="hidden group-open:inline">－ 접기</span>
+    </summary>
+    <div class="mt-3 space-y-3 text-sm text-slate-600 dark:text-slate-400">
+      <Prose text={step.deeper} />
+    </div>
+  </details>
+
+  {
+    step.practice && (
+      <aside class="mt-6 rounded-r-xl border-l-[3px] border-blue-600 bg-slate-50 px-4 py-3 text-sm dark:border-blue-400 dark:bg-white/[0.03]">
+        <p class="mb-1 font-semibold text-slate-800 dark:text-slate-200">실무에서는</p>
+        <Prose text={step.practice} />
+      </aside>
+    )
+  }
+</section>

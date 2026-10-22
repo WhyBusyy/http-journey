@@ -1,11 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
-import Prose from '../components/Prose.astro';
+import Hero from '../components/Hero.astro';
+import StepSection from '../components/StepSection.astro';
+import Footer from '../components/Footer.astro';
+import { steps } from '../data/steps';
+import { computeTimeline } from '../lib/timeline';
+
+const { total } = computeTimeline(steps);
 ---
 
-<Base title="요청 하나의 여정" description="HTTP 요청 하나가 물리적·논리적으로 거치는 길을 따라가 봐요.">
-  <main class="mx-auto max-w-2xl px-6 py-24">
-    <h1 class="text-4xl font-bold tracking-tight">요청 하나의 여정</h1>
-    <Prose text="먼저 [[tcp]] 연결을 맺어요." />
+<Base title={`요청 하나의 ${total}ms`} description="HTTP 요청 하나가 물리적·논리적으로 거치는 길을 따라가 봐요.">
+  <Hero total={total} />
+  <main>
+    {steps.map((step) => <StepSection step={step} />)}
+    <section id="overview"></section>
   </main>
+  <Footer />
 </Base>
