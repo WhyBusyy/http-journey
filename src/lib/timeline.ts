@@ -1,4 +1,4 @@
-import type { LogicalMessage, PhysicalNode, Step } from '../data/types';
+import type { LogicalMessage, Step } from '../data/types';
 
 export type TimelineEntry = { index: number; start: number; duration: number };
 
@@ -22,15 +22,19 @@ export function activeMessageIndex(progress: number, count: number): number {
   return Math.min(count - 1, Math.floor(clamp01(progress) * count));
 }
 
-/** 한 줄 안에서 패킷 점의 위치. 항상 왼쪽(0) → 오른쪽(nodeCount-1)으로만 간다. */
-export function packetPosition(t: number, nodeCount: number, snap: boolean): number {
-  const position = clamp01(t) * (nodeCount - 1);
-  return snap ? Math.round(position) : position;
+/** 응답이 돌아오는 단계(가는 메시지와 오는 메시지가 섞임)인지. 이런 단계는 시퀀스 다이어그램으로 그린다. */
+export function isRoundTrip(directions: LogicalMessage['direction'][]): boolean {
+  return directions.includes('up') && directions.includes('down');
 }
 
-/** 메시지마다 한 줄. nodes는 폰 쪽 → 서버 쪽 순서이고, down 메시지는 뒤집어서 보내는 쪽이 왼쪽에 오게 한다. */
-export function messageLegs(nodes: PhysicalNode[], directions: LogicalMessage['direction'][]): PhysicalNode[][] {
-  return directions.map((d) => (d === 'down' ? [...nodes].reverse() : nodes));
+/**
+ * 화살표(또는 한 줄) 위 패킷 점의 위치. 노드는 폰 쪽(0) → 서버 쪽(nodeCount-1) 순서로 고정이고,
+ * up은 왼→오, down(응답)은 오→왼으로 움직인다.
+ */
+export function arrowPosition(t: number, direction: LogicalMessage['direction'], nodeCount: number, snap = false): number {
+  const along = direction === 'down' ? 1 - clamp01(t) : clamp01(t);
+  const position = along * (nodeCount - 1);
+  return snap ? Math.round(position) : position;
 }
 
 /** 전체 진행값을 지금 줄(row)과 그 줄 안의 진행값(t, 0~1)으로 나눈다. */

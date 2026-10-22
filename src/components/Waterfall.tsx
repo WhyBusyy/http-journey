@@ -1,16 +1,10 @@
-import { useReducedMotion } from 'motion/react';
 import type { Step } from '../data/types';
 import type { TimelineEntry } from '../lib/timeline';
 
 type Props = { steps: Step[]; entries: TimelineEntry[]; total: number };
 
 export default function Waterfall({ steps, entries, total }: Props) {
-  const reduced = useReducedMotion() ?? false;
-
-  const goTo = (index: number) => {
-    document.getElementById(`step-${index}`)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
-  };
-
+  // 막대는 앵커 링크라 JS 없이도 이동한다. 부드러운 스크롤과 reduced-motion 대응은 global.css의 scroll-behavior가 맡는다.
   return (
     <div className="card-base p-5 sm:p-7">
       <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">
@@ -24,11 +18,10 @@ export default function Waterfall({ steps, entries, total }: Props) {
           const e = entries[s.index];
           return (
             <li key={s.slug}>
-              <button
-                type="button"
+              <a
+                href={`#step-${s.index}`}
                 data-bar={s.index}
                 aria-label={`${s.title}로 이동`}
-                onClick={() => goTo(s.index)}
                 className="group grid w-full grid-cols-[7rem_1fr_2.5rem] items-center gap-3 rounded-lg px-1 py-1.5 text-left text-[13px] hover:bg-white/70 sm:grid-cols-[9rem_1fr_3rem] dark:hover:bg-white/5"
               >
                 <span className="truncate text-slate-600 dark:text-slate-300">
@@ -41,7 +34,7 @@ export default function Waterfall({ steps, entries, total }: Props) {
                   />
                 </span>
                 <span className="text-right tabular-nums text-accent">{e.duration}</span>
-              </button>
+              </a>
             </li>
           );
         })}

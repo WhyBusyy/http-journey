@@ -27,3 +27,14 @@ test('reduced motion uses instant scroll', async ({ page }) => {
   await page.locator('[data-bar="0"]').click();
   await expect(page.locator('#step-0')).toBeInViewport({ timeout: 100 });
 });
+
+test.describe('before hydration / without JS', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('waterfall bars still jump to their step', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#overview').scrollIntoViewIfNeeded();
+    await page.locator('[data-bar="3"]').click();
+    await expect(page.locator('#step-3')).toBeInViewport();
+  });
+});
