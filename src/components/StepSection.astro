@@ -10,11 +10,16 @@ const { step } = Astro.props;
 ---
 
 <section id={`step-${step.index}`} data-step={step.index} class="mx-auto max-w-2xl scroll-mt-16 px-6 py-20">
-  <p class="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">
-    Step {step.index} · <span class="text-accent tabular-nums">+{step.ms}ms</span>
-  </p>
-  <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{step.title}</h2>
-  <p class="mt-2 text-slate-500 dark:text-slate-400">{step.summary}</p>
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+    <div class="order-2 sm:order-1">
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Step {step.index}</p>
+      <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{step.title}</h2>
+      <p class="mt-2 text-slate-500 dark:text-slate-400">{step.summary}</p>
+    </div>
+    <p data-step-ms class="order-1 shrink-0 text-3xl font-bold tabular-nums tracking-tight text-accent sm:order-2 sm:mb-8 sm:text-4xl">
+      +{step.ms}ms
+    </p>
+  </div>
 
   <div data-diagram class="card-base mt-8">
     <slot name="diagram" />

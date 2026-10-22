@@ -10,10 +10,11 @@ export default function ProgressBar({ total }: { total: number }) {
       data-elapsed={elapsed}
       className="fixed inset-x-0 top-0 z-30 bg-white/85 backdrop-blur dark:bg-dark-bg/85"
     >
-      <div className="mx-auto flex max-w-2xl items-center justify-between px-6 py-2 text-xs">
-        <span className="font-semibold uppercase tracking-[0.15em] text-slate-400">경과</span>
-        <span className="font-semibold tabular-nums text-accent">
-          {Math.round(elapsed)}ms <span className="font-normal text-slate-400">/ ~{total}ms</span>
+      <div className="mx-auto flex max-w-2xl items-center justify-between px-6 py-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">경과</span>
+        <span className="tabular-nums">
+          <span data-elapsed-value className="text-xl font-bold text-accent">{Math.round(elapsed)}ms</span>
+          <span className="ml-1 text-sm text-slate-400">/ ~{total}ms</span>
         </span>
       </div>
       <div className="h-[3px] bg-slate-100 dark:bg-white/5">
