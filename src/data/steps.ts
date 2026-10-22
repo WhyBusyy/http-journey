@@ -272,7 +272,7 @@ export const steps: Step[] = [
     ms: 48,
     provisional: true,
     messages: [{ label: '201 Created', direction: 'down' }, { label: 'JSON.parse', direction: 'down' }, { label: 'render', direction: 'down' }],
-    nodes: [aws, core, tower, { id: 'gpu', label: 'GPU', icon: 'Cpu' }, { id: 'phone-screen', label: '폰 화면', icon: 'Monitor' }],
+    nodes: [{ id: 'phone-screen', label: '폰 화면', icon: 'Monitor' }, { id: 'gpu', label: 'GPU', icon: 'Cpu' }, tower, core, aws],
     body: para(
       '핸들러가 주문 결과를 돌려주면 Node.js가 이를 JSON으로 바꿔 201 Created 응답을 만들어요. 응답은 ALB에서 다시 암호화되어 왔던 길을 거꾸로 달려 폰에 도착해요.',
       '브라우저는 응답을 복호화하고 fetch의 Promise를 완료시켜요. 우리 코드가 받은 데이터로 화면 상태를 바꾸면, 브라우저가 바뀐 부분을 다시 그려서 "주문 완료"가 나타나요.',

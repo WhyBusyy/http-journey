@@ -8,7 +8,8 @@ test('scrolling through a step advances message and packet', async ({ page }) =>
   const before = Number(await d.getAttribute('data-packet'));
   await page.mouse.wheel(0, 400);
   await page.waitForTimeout(200);
-  expect(Number(await d.getAttribute('data-packet'))).toBeGreaterThan(before);
+  // 왕복 메시지가 있으면 점이 돌아오기도 하므로 '움직였다'만 확인한다(방향은 단위 테스트가 검증)
+  expect(Number(await d.getAttribute('data-packet'))).not.toBe(before);
   expect(Number(await page.locator('[data-elapsed]').getAttribute('data-elapsed'))).toBeGreaterThan(0);
 });
 

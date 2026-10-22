@@ -32,7 +32,7 @@ export default function TwoLaneDiagram({ step, entry }: Props) {
   });
 
   const active = activeMessageIndex(progress, step.messages.length);
-  const packet = packetPosition(progress, step.nodes.length, reduced);
+  const packet = packetPosition(progress, step.messages.map((m) => m.direction), step.nodes.length, reduced);
   const goingDown = step.messages[active].direction === 'down';
   const left = `${(packet / (step.nodes.length - 1)) * 100}%`;
 

@@ -21,6 +21,13 @@ test('physical lane holds only hardware and media, never software', () => {
   for (const s of steps) for (const n of s.nodes) expect(n.label, `${s.slug}: ${n.label}`).not.toMatch(software);
 });
 
+test('physical nodes run phone side (left) to server side (right), so the response ends at the phone', () => {
+  const response = steps.find((s) => s.slug === 'response')!;
+  expect(response.messages.every((m) => m.direction === 'down')).toBe(true);
+  expect(response.nodes[0].id).toBe('phone-screen');
+  expect(response.nodes.at(-1)!.id).toBe('aws-seoul');
+});
+
 test('steps 1..8 have a practice note', () => {
   for (const s of steps.slice(1)) expect(s.practice, s.slug).toBeTruthy();
 });
