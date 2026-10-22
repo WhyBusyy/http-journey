@@ -51,3 +51,31 @@ test('node labels stay visible on mobile', async ({ page }) => {
   await page.locator('#step-3').scrollIntoViewIfNeeded();
   await expect(page.locator('#step-3 [data-diagram]').getByText('기지국').first()).toBeVisible();
 });
+
+// 다이어그램 윗변을 뷰포트 높이의 ratio 지점에 맞춘다
+async function placeDiagram(page: import('@playwright/test').Page, step: number, ratio: number) {
+  await page.evaluate(([step, ratio]) => {
+    const el = document.querySelector(`#step-${step} [data-active-message]`)!;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: top - window.innerHeight * ratio, behavior: 'instant' });
+  }, [step, ratio] as const);
+  await page.waitForTimeout(150);
+}
+
+test('sequence finishes while the diagram is still fully on screen', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await placeDiagram(page, 3, 0.15);
+  const d = page.locator('#step-3 [data-active-message]');
+  await expect(d).toHaveAttribute('data-packet', '9'); // 메시지 3개 × (노드 4개 - 1)
+  const box = (await d.boundingBox())!;
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.y + box.height).toBeLessThanOrEqual(800);
+});
+
+test('sequence waits at the start until the diagram is well inside the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await placeDiagram(page, 3, 0.85);
+  await expect(page.locator('#step-3 [data-active-message]')).toHaveAttribute('data-packet', '0');
+});

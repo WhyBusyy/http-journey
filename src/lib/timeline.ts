@@ -22,6 +22,15 @@ export function activeMessageIndex(progress: number, count: number): number {
   return Math.min(count - 1, Math.floor(clamp01(progress) * count));
 }
 
+// 다이어그램 윗변이 뷰포트의 START에서 END 지점까지 올라가는 동안 진행하고, 앞뒤로는 멈춰 있는다(여유 구간).
+const START = 0.7;
+const END = 0.2;
+
+/** 다이어그램 자체의 위치로 계산한 진행값. 끝나는 순간에도 다이어그램 전체가 화면 안에 남는다. */
+export function diagramProgress(top: number, viewportHeight: number): number {
+  return clamp01((START * viewportHeight - top) / ((START - END) * viewportHeight));
+}
+
 /** 응답이 돌아오는 단계(가는 메시지와 오는 메시지가 섞임)인지. 이런 단계는 시퀀스 다이어그램으로 그린다. */
 export function isRoundTrip(directions: LogicalMessage['direction'][]): boolean {
   return directions.includes('up') && directions.includes('down');

@@ -5,7 +5,7 @@ import {
   Monitor, Network, RadioTower, Router, Server, Smartphone, type LucideIcon,
 } from 'lucide-react';
 import type { PhysicalNode, Step } from '../data/types';
-import { activeMessageIndex, arrowPosition, elapsedAt, isRoundTrip, rowProgress, type TimelineEntry } from '../lib/timeline';
+import { activeMessageIndex, arrowPosition, diagramProgress, elapsedAt, isRoundTrip, rowProgress, type TimelineEntry } from '../lib/timeline';
 import { $elapsedMs } from '../stores/progress';
 
 // steps.ts에서 쓰는 아이콘만 가져온다(전체 import는 번들을 키운다)
@@ -26,12 +26,15 @@ export default function TwoLaneDiagram({ step, entry }: Props) {
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, 'change', () => {
-    const section = ref.current?.closest('section');
-    if (!section) return;
+    const el = ref.current;
+    const section = el?.closest('section');
+    if (!el || !section) return;
+    const p = diagramProgress(el.getBoundingClientRect().top, window.innerHeight);
+    setProgress(p);
+    // 경과 시간은 뷰포트 중앙선을 품은 섹션 하나만 갱신한다
     const rect = section.getBoundingClientRect();
-    const local = (window.innerHeight / 2 - rect.top) / rect.height;
-    setProgress(Math.min(1, Math.max(0, local)));
-    if (local >= 0 && local <= 1) $elapsedMs.set(elapsedAt(entry, local));
+    const center = window.innerHeight / 2;
+    if (rect.top <= center && rect.bottom >= center) $elapsedMs.set(elapsedAt(entry, p));
   });
 
   const directions = step.messages.map((m) => m.direction);

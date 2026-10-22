@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import type { Step } from '../../src/data/types';
-import { activeMessageIndex, arrowPosition, computeTimeline, elapsedAt, isRoundTrip, rowProgress } from '../../src/lib/timeline';
+import { activeMessageIndex, arrowPosition, computeTimeline, diagramProgress, elapsedAt, isRoundTrip, rowProgress } from '../../src/lib/timeline';
 
 const steps = [{ ms: 5 }, { ms: 20 }, { ms: 18 }] as Step[];
 
@@ -50,4 +50,13 @@ test('arrowPosition follows the arrow: up runs left→right, down runs right→l
   expect(arrowPosition(1, 'down', 5)).toBeCloseTo(0);
   expect(arrowPosition(0.3, 'up', 4, true)).toBe(1);
   expect(arrowPosition(-1, 'up', 4)).toBe(0);
+});
+
+test('diagramProgress runs while the diagram top moves from 70% to 20% of the viewport, then holds', () => {
+  const vh = 1000;
+  expect(diagramProgress(900, vh)).toBe(0); // 아직 아래쪽: 시작 전 여유
+  expect(diagramProgress(700, vh)).toBe(0);
+  expect(diagramProgress(450, vh)).toBeCloseTo(0.5);
+  expect(diagramProgress(200, vh)).toBe(1);
+  expect(diagramProgress(-300, vh)).toBe(1); // 지나간 뒤: 완료 상태 유지
 });
