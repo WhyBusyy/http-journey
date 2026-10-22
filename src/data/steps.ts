@@ -1,7 +1,7 @@
 import type { PhysicalNode, Step } from './types';
 
 // 물리 레인에서 여러 Step이 함께 쓰는 장비
-const phone: PhysicalNode = { id: 'phone', label: '폰', icon: 'Smartphone' };
+const ap: PhysicalNode = { id: 'phone-ap', label: 'AP(프로세서)', icon: 'Cpu' };
 const modem: PhysicalNode = { id: 'phone-modem', label: '폰 modem', icon: 'Smartphone' };
 const tower: PhysicalNode = { id: 'cell-tower', label: '기지국', icon: 'RadioTower' };
 const core: PhysicalNode = { id: 'carrier-core', label: '통신사 코어망', icon: 'Building2' };
@@ -18,9 +18,9 @@ export const steps: Step[] = [
     provisional: true,
     messages: [{ label: 'touch', direction: 'up' }, { label: 'click', direction: 'up' }, { label: 'fetch()', direction: 'up' }],
     nodes: [
-      { id: 'touchscreen', label: '터치스크린', icon: 'Hand' },
-      { id: 'os', label: 'OS', icon: 'Cpu' },
-      { id: 'browser', label: '브라우저', icon: 'Globe' },
+      { id: 'touch-sensor', label: '터치 센서', icon: 'Hand' },
+      { id: 'touch-controller', label: '터치 컨트롤러', icon: 'Cpu' },
+      ap,
     ],
     body: '(작성 예정)',
     deeper: '(작성 예정)',
@@ -35,8 +35,8 @@ export const steps: Step[] = [
     provisional: true,
     messages: [{ label: 'URL parse', direction: 'up' }, { label: 'cache lookup', direction: 'up' }],
     nodes: [
-      { id: 'cpu', label: 'CPU', icon: 'Cpu' },
-      { id: 'memory', label: '메모리', icon: 'MemoryStick' },
+      ap,
+      { id: 'phone-ram', label: '메모리(RAM)', icon: 'MemoryStick' },
     ],
     body: '(작성 예정)',
     deeper: '(작성 예정)',
@@ -51,7 +51,7 @@ export const steps: Step[] = [
     ms: 20,
     provisional: true,
     messages: [{ label: 'DNS query', direction: 'up' }, { label: 'DNS response', direction: 'down' }],
-    nodes: [modem, tower, { id: 'carrier-dns', label: '통신사 DNS', icon: 'Server' }],
+    nodes: [modem, tower, { id: 'carrier-dns', label: '통신사 DNS 서버', icon: 'Server' }],
     body: '(작성 예정)',
     deeper: '(작성 예정)',
     practice: '(작성 예정)',
@@ -115,7 +115,7 @@ export const steps: Step[] = [
       { id: 'alb', label: 'ALB', icon: 'Network' },
       { id: 'switch', label: '스위치', icon: 'Router' },
       { id: 'nic', label: '서버 NIC', icon: 'Server' },
-      { id: 'kernel', label: 'kernel', icon: 'Cpu' },
+      { id: 'server-cpu', label: 'CPU', icon: 'Cpu' },
     ],
     body: '(작성 예정)',
     deeper: '(작성 예정)',
@@ -136,9 +136,8 @@ export const steps: Step[] = [
     provisional: true,
     messages: [{ label: 'poll', direction: 'up' }, { label: 'handler()', direction: 'up' }],
     nodes: [
-      { id: 'kernel-node', label: 'kernel', icon: 'Cpu' },
-      { id: 'libuv', label: 'libuv', icon: 'Layers' },
-      { id: 'main-thread', label: 'main thread', icon: 'Cpu' },
+      { id: 'cpu-core', label: 'CPU core', icon: 'Cpu' },
+      { id: 'server-ram', label: '메모리(RAM)', icon: 'MemoryStick' },
     ],
     body: '(작성 예정)',
     deeper: '(작성 예정)',
@@ -159,8 +158,8 @@ export const steps: Step[] = [
     provisional: true,
     messages: [{ label: 'INSERT', direction: 'up' }, { label: 'COMMIT', direction: 'up' }, { label: 'result', direction: 'down' }],
     nodes: [
-      { id: 'node-server', label: 'Node 서버', icon: 'Server' },
-      { id: 'postgres', label: 'Postgres', icon: 'Database' },
+      { id: 'app-server', label: '앱 서버', icon: 'Server' },
+      { id: 'db-server', label: 'DB 서버(RDS)', icon: 'Database' },
       { id: 'storage', label: 'SSD/EBS', icon: 'HardDrive' },
     ],
     body: '(작성 예정)',
@@ -176,7 +175,7 @@ export const steps: Step[] = [
     ms: 48,
     provisional: true,
     messages: [{ label: '201 Created', direction: 'down' }, { label: 'JSON.parse', direction: 'down' }, { label: 'render', direction: 'down' }],
-    nodes: [aws, core, tower, { ...phone, id: 'phone-screen', label: '폰 화면', icon: 'Monitor' }],
+    nodes: [aws, core, tower, { id: 'gpu', label: 'GPU', icon: 'Cpu' }, { id: 'phone-screen', label: '폰 화면', icon: 'Monitor' }],
     body: '(작성 예정)',
     deeper: '(작성 예정)',
     practice: '(작성 예정)',

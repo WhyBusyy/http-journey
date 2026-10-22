@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
 import {
-  Building2, Cloud, Cpu, Database, Globe, Hand, HardDrive, Layers, MemoryStick,
+  Building2, Cloud, Cpu, Database, Hand, HardDrive, MemoryStick,
   Monitor, Network, RadioTower, Router, Server, Smartphone, type LucideIcon,
 } from 'lucide-react';
 import type { Step } from '../data/types';
@@ -10,7 +10,7 @@ import { $elapsedMs } from '../stores/progress';
 
 // steps.ts에서 쓰는 아이콘만 가져온다(전체 import는 번들을 키운다)
 const ICONS: Record<string, LucideIcon> = {
-  Building2, Cloud, Cpu, Database, Globe, Hand, HardDrive, Layers, MemoryStick,
+  Building2, Cloud, Cpu, Database, Hand, HardDrive, MemoryStick,
   Monitor, Network, RadioTower, Router, Server, Smartphone,
 };
 

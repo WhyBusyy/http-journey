@@ -75,14 +75,14 @@
 
 | # | 단계 | 논리 레인 | 물리 레인 | 실무에서는 |
 |---|---|---|---|---|
-| 0 | 탭 | 터치 이벤트 → JS `onClick` → `fetch()` | 터치스크린 센서 → OS → 브라우저 | |
+| 0 | 탭 | 터치 이벤트 → JS `onClick` → `fetch()` | 터치 센서 → 터치 컨트롤러 → AP(프로세서) | |
 | 1 | URL과 캐시 | URL 파싱, HTTP cache 확인 | 기기 내부 (CPU, 메모리) | `Cache-Control` |
 | 2 | DNS | DNS query / response | 폰 modem → 기지국 → 통신사 DNS resolver | `ENOTFOUND`, DevTools DNS Lookup |
 | 3 | TCP | 3-way handshake (`SYN` / `SYN-ACK` / `ACK`) | 무선 구간 → 통신사 코어망 → 백본 → AWS 리전 | `ECONNREFUSED`, keep-alive |
 | 4 | TLS | 인증서 검증, 키 교환 | 같은 경로 왕복 (RTT 체감) | 인증서 오류 |
-| 5 | 서버 도착 | Load balancer → Node 프로세스 | 데이터센터 스위치 → 서버 NIC → interrupt → kernel | 502 / 504 |
-| 6 | Node 내부 | event loop, libuv, 핸들러 실행 | CPU core, 단일 main thread | blocking 코드의 위험 |
-| 7 | DB | connection pool → Postgres 쿼리 | 옆 서버로 가는 네트워크 hop → SSD/EBS | pool 고갈, 느린 쿼리 |
+| 5 | 서버 도착 | Load balancer → Node 프로세스, interrupt → kernel | ALB → 데이터센터 스위치 → 서버 NIC → CPU | 502 / 504 |
+| 6 | Node 내부 | event loop, libuv, main thread에서 핸들러 실행 | CPU core ↔ 메모리(RAM) | blocking 코드의 위험 |
+| 7 | DB | connection pool → Postgres 쿼리 | 앱 서버 → DB 서버(RDS) → SSD/EBS | pool 고갈, 느린 쿼리 |
 | 8 | 응답과 렌더링 | 응답 → JSON 파싱 → DOM 업데이트 | 같은 길로 귀환 → GPU → 디스플레이 refresh | TTFB |
 
 ## 5. 두 레인 다이어그램 (핵심 컴포넌트)
@@ -92,6 +92,7 @@
 - **레이아웃 (빌더 판단으로 확정):** 다이어그램은 화면에 고정(sticky)하지 않고 **각 Step 섹션 안에서 본문과 함께 흘러간다.** 진행값은 그 섹션이 뷰포트를 지나는 비율로 계산한다. 화면에 고정되는 것은 상단 진행 바뿐이다. 모바일 성능과 구현 단순성 때문.
 - 하나의 카드 안에 위 **논리 레인**, 아래 **물리 레인**.
 - 논리 레인: 해당 단계의 메시지 칩이 시간순으로 나열되고, 스크롤 진행에 따라 하나씩 활성화(비활성은 흐린 회색).
+- 물리 레인: **하드웨어와 매체만** 둔다(사용자 결정, 2026-10-22). OS·kernel·libuv·thread 같은 소프트웨어는 논리 레인과 본문에서 다룬다.
 - 물리 레인: 장비 노드(아이콘 + 라벨)가 선으로 연결되고, 파란 점(패킷)이 스크롤 진행에 맞춰 노드 사이를 이동. 응답 방향일 때는 반대로 이동.
 - 두 레인은 **같은 진행값**을 공유해서 "지금 이 메시지가 물리적으로 여기를 지나는 중"이 보인다.
 - 모바일에서는 물리 레인 노드를 가로 스크롤 없이 줄바꿈 또는 축약 라벨로 처리.

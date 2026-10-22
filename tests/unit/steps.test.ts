@@ -16,6 +16,11 @@ test('every step has two lanes worth of data', () => {
   }
 });
 
+test('physical lane holds only hardware and media, never software', () => {
+  const software = /\bOS\b|브라우저|kernel|libuv|thread|Postgres|Node\.js/i;
+  for (const s of steps) for (const n of s.nodes) expect(n.label, `${s.slug}: ${n.label}`).not.toMatch(software);
+});
+
 test('steps 1..8 have a practice note', () => {
   for (const s of steps.slice(1)) expect(s.practice, s.slug).toBeTruthy();
 });
