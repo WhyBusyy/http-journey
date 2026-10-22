@@ -38,3 +38,28 @@ test.describe('before hydration / without JS', () => {
     await expect(page.locator('#step-3')).toBeInViewport();
   });
 });
+
+test('jumping straight to the top resets elapsed to 0', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#step-4').scrollIntoViewIfNeeded();
+  await page.mouse.wheel(0, 200);
+  await page.waitForTimeout(200);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.waitForTimeout(200);
+  await expect(page.locator('[data-elapsed]')).toHaveAttribute('data-elapsed', '0');
+});
+
+test('jumping straight to the overview shows the full total', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#step-2').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(200);
+  await page.evaluate(() => document.getElementById('overview')!.scrollIntoView({ behavior: 'instant', block: 'center' }));
+  await page.waitForTimeout(200);
+  const { total } = computeTimeline(steps);
+  await expect(page.locator('[data-elapsed]')).toHaveAttribute('data-elapsed', String(total));
+});
+
+test('waterfall bars have a correct accessible name', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('[data-bar="0"]')).toHaveAccessibleName(`Step 0: ${steps[0].title}, ${steps[0].ms}ms. 이 단계로 이동`);
+});

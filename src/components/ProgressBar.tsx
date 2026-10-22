@@ -1,8 +1,23 @@
+import { useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { $elapsedMs } from '../stores/progress';
 
 export default function ProgressBar({ total }: { total: number }) {
   const elapsed = useStore($elapsedMs);
+
+  // Step이 아닌 구간(Hero, 워터폴, footer)에 중앙선이 오면 다이어그램은 아무도 값을 쓰지 않는다.
+  // 순간 이동해도 값이 멈춰 있지 않게, Step 위쪽이면 0, Step 아래쪽이면 총합으로 맞춘다.
+  useEffect(() => {
+    const onScroll = () => {
+      const sections = document.querySelectorAll('section[data-step]');
+      if (!sections.length) return;
+      const center = window.innerHeight / 2;
+      if (sections[0].getBoundingClientRect().top > center) $elapsedMs.set(0);
+      else if (sections[sections.length - 1].getBoundingClientRect().bottom < center) $elapsedMs.set(total);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [total]);
   const pct = total ? (elapsed / total) * 100 : 0;
 
   return (

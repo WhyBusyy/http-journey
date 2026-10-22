@@ -35,3 +35,17 @@ test('steps 1..8 have a practice note', () => {
 test('every step cites at least one source', () => {
   for (const s of steps) expect(s.sources.length, s.slug).toBeGreaterThanOrEqual(1);
 });
+
+test('a step only claims to be the longest if it really has the most ms', () => {
+  const max = Math.max(...steps.map((s) => s.ms));
+  for (const s of steps) {
+    const text = [s.body, s.deeper, s.practice ?? ''].join(' ');
+    if (/전체에서 가장 긴/.test(text)) expect(s.ms, s.slug).toBe(max);
+  }
+});
+
+test('TLS step says the certificate already travels encrypted in TLS 1.3', () => {
+  const tls = steps.find((s) => s.slug === 'tls')!;
+  expect(tls.body).not.toMatch(/Finished를 보내면 그때부터 모든 내용이 암호화/);
+  expect(tls.body).toMatch(/인증서.*암호화/);
+});

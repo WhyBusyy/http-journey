@@ -21,7 +21,7 @@ export default function Waterfall({ steps, entries, total }: Props) {
               <a
                 href={`#step-${s.index}`}
                 data-bar={s.index}
-                aria-label={`${s.title}로 이동`}
+                aria-label={`Step ${s.index}: ${s.title}, ${e.duration}ms. 이 단계로 이동`}
                 className="group grid w-full grid-cols-[7rem_1fr_2.5rem] items-center gap-3 rounded-lg px-1 py-1.5 text-left text-[13px] hover:bg-white/70 sm:grid-cols-[9rem_1fr_3rem] dark:hover:bg-white/5"
               >
                 <span className="truncate text-slate-600 dark:text-slate-300">
