@@ -1,0 +1,20 @@
+---
+import { parseTerms } from '../lib/terms';
+import Term from './Term.astro';
+
+interface Props {
+  text: string;
+  class?: string;
+}
+
+const { text, class: className } = Astro.props;
+const paragraphs = text.split(/\n\s*\n/).map(parseTerms);
+---
+
+{
+  paragraphs.map((segments) => (
+    <p class:list={['leading-relaxed', className]}>
+      {segments.map((s) => (s.type === 'text' ? s.value : <Term termKey={s.key} label={s.label} />))}
+    </p>
+  ))
+}

@@ -1,0 +1,23 @@
+// 용어 key → 화면 표기(label)와 한국어 한 줄 설명(ko)
+export const glossary: Record<string, { label: string; ko: string }> = {
+  dns: { label: 'DNS', ko: '사람이 읽는 도메인 이름을 컴퓨터가 쓰는 IP 주소로 바꿔 주는 전화번호부 같은 시스템이에요.' },
+  tcp: { label: 'TCP', ko: '데이터가 빠짐없이, 보낸 순서대로 도착하도록 책임지는 전송 규칙이에요.' },
+  tls: { label: 'TLS', ko: '주고받는 내용을 암호화하고 상대 서버가 진짜인지 확인하는 보안 규칙이에요. https의 s가 이것이에요.' },
+  syn: { label: 'SYN', ko: '"연결하고 싶어요"라는 뜻으로 처음 보내는 TCP 신호예요.' },
+  'syn-ack': { label: 'SYN-ACK', ko: '"좋아요, 나도 준비됐어요"라고 서버가 돌려주는 TCP 신호예요.' },
+  ack: { label: 'ACK', ko: '"잘 받았어요"라는 확인 신호예요.' },
+  '3-way-handshake': {
+    label: '3-way handshake',
+    ko: 'TCP 연결을 열기 전에 SYN, SYN-ACK, ACK 세 신호로 양쪽이 준비됐는지 확인하는 절차예요.',
+  },
+  http2: { label: 'HTTP/2', ko: '연결 하나로 여러 요청을 동시에 주고받을 수 있게 개선된 HTTP 버전이에요.' },
+  alb: { label: 'ALB', ko: 'AWS의 Application Load Balancer. 들어온 요청을 뒤에 있는 여러 서버에 나눠 줘요.' },
+  'event-loop': { label: 'event loop', ko: 'Node.js가 할 일 목록을 계속 돌면서 준비된 작업을 하나씩 실행하는 반복 구조예요.' },
+  libuv: { label: 'libuv', ko: 'Node.js 밑에서 네트워크·파일 같은 입출력을 OS와 대신 주고받는 C 라이브러리예요.' },
+  'connection-pool': {
+    label: 'connection pool',
+    ko: 'DB 연결을 미리 여러 개 열어 두고 돌려 쓰는 방식이에요. 매번 새로 연결하는 시간을 아껴 줘요.',
+  },
+  ttfb: { label: 'TTFB', ko: 'Time To First Byte. 요청을 보낸 뒤 응답의 첫 바이트가 도착할 때까지 걸린 시간이에요.' },
+  'keep-alive': { label: 'keep-alive', ko: '한 번 맺은 연결을 끊지 않고 다음 요청에도 다시 쓰는 방식이에요.' },
+};

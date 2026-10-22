@@ -1,0 +1,13 @@
+---
+import { glossary } from '../data/glossary';
+
+interface Props {
+  termKey: string;
+  label: string;
+}
+
+const { termKey, label } = Astro.props;
+const id = `term-${termKey}-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<span class="term" tabindex="0" aria-describedby={id}>{label}<span role="tooltip" id={id}>{glossary[termKey].ko}</span></span>
