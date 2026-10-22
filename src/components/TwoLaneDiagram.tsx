@@ -5,7 +5,7 @@ import {
   Monitor, Network, RadioTower, Router, Server, Smartphone, type LucideIcon,
 } from 'lucide-react';
 import type { Step } from '../data/types';
-import { activeMessageIndex, elapsedAt, packetPosition, unrollPath, type TimelineEntry } from '../lib/timeline';
+import { activeMessageIndex, elapsedAt, messageLegs, packetPosition, rowProgress, type TimelineEntry } from '../lib/timeline';
 import { $elapsedMs } from '../stores/progress';
 
 // steps.ts에서 쓰는 아이콘만 가져온다(전체 import는 번들을 키운다)
@@ -32,11 +32,13 @@ export default function TwoLaneDiagram({ step, entry }: Props) {
   });
 
   const active = activeMessageIndex(progress, step.messages.length);
-  const { path, segments } = unrollPath(step.nodes, step.messages.map((m) => m.direction));
-  const packet = packetPosition(progress, path.length, reduced);
+  const legs = messageLegs(step.nodes, step.messages.map((m) => m.direction));
+  const { row, t } = rowProgress(progress, legs.length);
+  const n = step.nodes.length;
+  const position = packetPosition(t, n, reduced);
+  // 줄을 이어 센 누적 위치(아래로 스크롤하면 항상 커진다)
+  const packet = row * (n - 1) + position;
   const goingDown = step.messages[active].direction === 'down';
-  const n = path.length;
-  // 노드 i의 중심은 (i + 0.5) / n 지점. 선은 첫 노드 중심에서 끝 노드 중심까지.
   const center = (i: number) => `${((i + 0.5) / n) * 100}%`;
 
   return (
@@ -61,53 +63,53 @@ export default function TwoLaneDiagram({ step, entry }: Props) {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-2 py-4 sm:grid-cols-[3rem_1fr] sm:gap-3">
-        <span className="text-xs font-semibold text-slate-500 sm:mt-2.5 dark:text-slate-400">물리</span>
-        <div className="relative min-w-0">
-          <div
-            className="absolute top-3 h-0.5 bg-slate-200 sm:top-[1.0625rem] dark:bg-dark-border"
-            style={{ left: center(0), right: `${(0.5 / n) * 100}%` }}
-          >
-            <span
-              aria-hidden="true"
-              className={`absolute -top-1 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-blue-600 shadow-[0_0_0_4px_rgba(37,99,235,0.15)] dark:bg-blue-400 ${
-                reduced ? '' : 'transition-[left] duration-150 ease-out'
-              }`}
-              style={{ left: `${(packet / (n - 1)) * 100}%` }}
-            />
-          </div>
-          <ol className="relative grid" style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}>
-            {path.map((node, i) => {
-              const Icon = ICONS[node.icon] ?? Server;
-              return (
-                <li key={`${node.id}-${i}`} className="flex min-w-0 flex-col items-center gap-1">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white text-slate-600 ring-1 ring-slate-200 sm:h-[2.125rem] sm:w-[2.125rem] sm:rounded-[10px] dark:bg-dark-card dark:text-slate-300 dark:ring-dark-border">
-                    <Icon className="h-3 w-3 sm:h-4 sm:w-4" strokeWidth={1.75} aria-hidden="true" />
-                  </span>
-                  <span className="hidden max-w-full break-keep text-center text-[11px] leading-tight text-slate-500 sm:block dark:text-slate-400">
-                    {node.label}
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
-          {segments.length > 1 && (
-            <div className="relative mt-2 h-4">
-              {segments.map((seg, i) => (
-                <span
-                  key={step.messages[i].label}
-                  className={`absolute -translate-x-1/2 whitespace-nowrap font-mono text-[10px] sm:text-[11px] ${
-                    i === active ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'
-                  }`}
-                  style={{ left: `${(((seg.start + seg.end) / 2 + 0.5) / n) * 100}%` }}
-                >
-                  {step.messages[i].label}
-                </span>
-              ))}
-            </div>
-          )}
-          <p data-current-node className="mt-2 text-xs text-slate-500 sm:hidden dark:text-slate-400">
-            지금: {path[Math.round(packet)].label}
-          </p>
+        <span className="text-xs font-semibold text-slate-500 sm:mt-6 dark:text-slate-400">물리</span>
+        <div className="min-w-0 space-y-3">
+          {legs.map((leg, li) => {
+            const state = li < row ? 'done' : li === row ? 'active' : 'pending';
+            return (
+              <div
+                key={step.messages[li].label}
+                data-leg={li}
+                data-state={state}
+                className={`transition-opacity ${state === 'active' ? '' : state === 'done' ? 'opacity-50' : 'opacity-30'}`}
+              >
+                {legs.length > 1 && (
+                  <p className={`mb-1.5 font-mono text-[11px] ${state === 'active' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}>
+                    {step.messages[li].label}
+                  </p>
+                )}
+                <div className="relative">
+                  <div className="absolute top-3 h-0.5 bg-slate-200 sm:top-[1.0625rem] dark:bg-dark-border" style={{ left: center(0), right: `${(0.5 / n) * 100}%` }}>
+                    {state === 'active' && (
+                      <span
+                        aria-hidden="true"
+                        className={`absolute -top-1 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-blue-600 shadow-[0_0_0_4px_rgba(37,99,235,0.15)] dark:bg-blue-400 ${
+                          reduced ? '' : 'transition-[left] duration-150 ease-out'
+                        }`}
+                        style={{ left: `${(position / (n - 1)) * 100}%` }}
+                      />
+                    )}
+                  </div>
+                  <ol className="relative grid" style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}>
+                    {leg.map((node) => {
+                      const Icon = ICONS[node.icon] ?? Server;
+                      return (
+                        <li key={node.id} className="flex min-w-0 flex-col items-center gap-1">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white text-slate-600 ring-1 ring-slate-200 sm:h-[2.125rem] sm:w-[2.125rem] sm:rounded-[10px] dark:bg-dark-card dark:text-slate-300 dark:ring-dark-border">
+                            <Icon className="h-3 w-3 sm:h-4 sm:w-4" strokeWidth={1.75} aria-hidden="true" />
+                          </span>
+                          <span className="max-w-full break-keep text-center text-[10px] leading-tight text-slate-500 sm:text-[11px] dark:text-slate-400">
+                            {node.label}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       <p className="sr-only">

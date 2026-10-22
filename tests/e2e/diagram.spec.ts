@@ -8,7 +8,7 @@ test('scrolling through a step advances message and packet', async ({ page }) =>
   const before = Number(await d.getAttribute('data-packet'));
   await page.mouse.wheel(0, 400);
   await page.waitForTimeout(200);
-  // 경로를 한 줄로 펼쳤으므로 아래로 스크롤하면 점은 항상 오른쪽으로만 간다
+  // data-packet은 줄을 이어 센 누적 위치라 아래로 스크롤하면 항상 커진다
   expect(Number(await d.getAttribute('data-packet'))).toBeGreaterThan(before);
   expect(Number(await page.locator('[data-elapsed]').getAttribute('data-elapsed'))).toBeGreaterThan(0);
 });
@@ -29,9 +29,16 @@ test('no horizontal overflow at 360px', async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
-test('on mobile the current node is spelled out under the icon-only path', async ({ page }) => {
+test('round trips are drawn as one row per message', async ({ page }) => {
+  await page.goto('/');
+  const legs = page.locator('#step-3 [data-leg]');
+  await expect(legs).toHaveCount(3);
+  await expect(page.locator('#step-3 [data-leg][data-state="active"]')).toHaveCount(1);
+});
+
+test('node labels stay visible on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
   await page.goto('/');
   await page.locator('#step-3').scrollIntoViewIfNeeded();
-  await expect(page.locator('#step-3 [data-current-node]')).toHaveText(/^지금: .+/);
+  await expect(page.locator('#step-3 [data-leg]').first().getByText('기지국')).toBeVisible();
 });
