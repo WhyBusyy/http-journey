@@ -1,0 +1,105 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  .pf { font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; background:#fff; color:#1e293b; border-radius:12px; padding:28px; word-break:keep-all; line-height:1.6; }
+  .pf h1 { font-size:26px; font-weight:700; letter-spacing:-0.02em; margin:0 0 6px; background:linear-gradient(90deg,#0f172a,#334155); -webkit-background-clip:text; color:transparent; }
+  .pf .sub { color:#64748b; font-size:14px; margin:0 0 20px; }
+  .pf .card { background:rgba(248,250,252,.8); border-radius:16px; padding:18px; }
+  .pf .accent { color:#2563eb; }
+  .pf .term { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12.5px; background:#eff6ff; color:#2563eb; padding:1px 6px; border-radius:6px; }
+  .pf .label { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; }
+  .pf .ms { font-variant-numeric: tabular-nums; color:#2563eb; font-weight:600; }
+  .pf .btn { display:inline-block; font-size:13px; padding:7px 14px; border-radius:999px; background:#0f172a; color:#fff; }
+  .pf .btn.ghost { background:#f1f5f9; color:#334155; }
+  .pf .bar { height:6px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
+  .pf .bar > i { display:block; height:100%; background:#2563eb; border-radius:999px; }
+  .pf .row { display:flex; align-items:center; gap:10px; font-size:13px; }
+  .pf .wf-name { width:92px; color:#475569; }
+  .pf .wf-track { flex:1; position:relative; height:14px; }
+  .pf .wf-track > i { position:absolute; top:3px; height:8px; border-radius:4px; background:#cbd5e1; }
+  .pf .wf-track > i.on { background:#2563eb; }
+  .pf .dot { width:8px; height:8px; border-radius:50%; background:#cbd5e1; display:inline-block; }
+  .pf .dot.on { background:#2563eb; }
+</style>
+
+<h2>어떤 방식으로 흐름을 보여줄까요?</h2>
+<p class="subtitle">세 시안 모두 포트폴리오 톤을 따릅니다. 흰 배경, slate 텍스트, blue-600 포인트, Pretendard, 둥근 회색 카드. 차이는 '요청 하나를 따라가는 방식'입니다.</p>
+
+<div class="cards">
+
+  <!-- A. 스크롤 스토리 -->
+  <div class="card" data-choice="a-scroll" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="pf">
+        <div style="position:sticky;top:0;margin-bottom:18px">
+          <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="label">경과 시간</span><span class="ms">47ms / 200ms</span></div>
+          <div class="bar"><i style="width:24%"></i></div>
+        </div>
+        <span class="label">Step 2</span>
+        <h1>서버와 악수하기</h1>
+        <p class="sub">브라우저가 서버와 연결을 맺는 단계예요.</p>
+        <div class="card">
+          <p style="margin:0 0 10px;font-size:14px">데이터를 보내기 전에 <span class="term">TCP</span> 연결부터 맺어야 해요. 이 과정을 <span class="term">3-way handshake</span>라고 불러요.</p>
+          <div class="row"><span class="term">SYN</span> → <span class="term">SYN-ACK</span> → <span class="term">ACK</span> <span class="ms" style="margin-left:auto">+25ms</span></div>
+        </div>
+        <p class="sub" style="margin:18px 0 0;text-align:center">↓ 스크롤하면 다음 단계</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 스크롤 스토리</h3>
+      <p>한 페이지를 위에서 아래로 읽어 내려가요. 위쪽 진행 바에 경과 ms가 계속 쌓이고, 블로그 글처럼 편하게 읽혀요.</p>
+    </div>
+  </div>
+
+  <!-- B. 스텝퍼 -->
+  <div class="card" data-choice="b-stepper" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="pf">
+        <div class="row" style="gap:6px;margin-bottom:22px">
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="label" style="margin-left:auto">3 / 7</span>
+        </div>
+        <span class="label">Step 3 · <span class="ms">+30ms</span></span>
+        <h1>비밀 통로 만들기</h1>
+        <p class="sub"><span class="term">TLS handshake</span>로 암호화 키를 주고받아요.</p>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+          <div style="text-align:center">🧑‍💻<br>Browser</div>
+          <div style="flex:1;margin:0 12px;border-top:2px dashed #93c5fd;position:relative"><span class="term" style="position:absolute;top:-12px;left:50%;transform:translateX(-50%)">ClientHello</span></div>
+          <div style="text-align:center">🖥️<br>Server</div>
+        </div>
+        <div class="row" style="justify-content:space-between;margin-top:20px"><span class="btn ghost">← 이전</span><span class="btn">다음 →</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 단계별 스텝퍼</h3>
+      <p>화면에 한 단계씩만 보여주고 '다음'을 눌러 넘겨요. 슬라이드처럼 집중이 잘 되고, 단계마다 작은 애니메이션을 넣기 좋아요.</p>
+    </div>
+  </div>
+
+  <!-- C. 워터폴 -->
+  <div class="card" data-choice="c-waterfall" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="pf">
+        <span class="label">GET /api/users/42</span>
+        <h1>200ms의 내역서</h1>
+        <p class="sub">DevTools Network 탭처럼 생긴 타임라인이에요. 막대를 눌러보세요.</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+          <div class="row"><span class="wf-name">DNS</span><span class="wf-track"><i style="left:0;width:10%"></i></span></div>
+          <div class="row"><span class="wf-name">TCP</span><span class="wf-track"><i style="left:10%;width:12%"></i></span></div>
+          <div class="row"><span class="wf-name">TLS</span><span class="wf-track"><i style="left:22%;width:15%"></i></span></div>
+          <div class="row"><span class="wf-name accent">Event loop</span><span class="wf-track"><i class="on" style="left:37%;width:8%"></i></span></div>
+          <div class="row"><span class="wf-name">Postgres</span><span class="wf-track"><i style="left:45%;width:30%"></i></span></div>
+          <div class="row"><span class="wf-name">Response</span><span class="wf-track"><i style="left:75%;width:25%"></i></span></div>
+        </div>
+        <div class="card" style="font-size:13.5px">
+          <span class="label">Event loop · <span class="ms">15ms</span></span>
+          <p style="margin:6px 0 0">요청이 Node.js에 도착하면 <span class="term">libuv</span>가 소켓 이벤트를 감지하고, <span class="term">poll phase</span>에서 여러분의 핸들러를 실행해요.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. 워터폴 타임라인</h3>
+      <p>전체 그림을 한눈에 먼저 보여주고, 궁금한 막대를 눌러 설명을 펼쳐요. 실무에서 보는 Network 탭과 바로 연결돼요.</p>
+    </div>
+  </div>
+
+</div>

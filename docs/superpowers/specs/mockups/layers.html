@@ -1,0 +1,132 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  .pf { font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif; background:#fff; color:#1e293b; border-radius:12px; padding:28px; word-break:keep-all; line-height:1.65; }
+  .pf h1 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin:4px 0 4px; color:#0f172a; }
+  .pf .sub { color:#64748b; font-size:14px; margin:0 0 18px; }
+  .pf .label { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; font-weight:600; }
+  .pf .ms { font-variant-numeric:tabular-nums; color:#2563eb; font-weight:600; }
+  .pf .term { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; background:#eff6ff; color:#2563eb; padding:1px 6px; border-radius:6px; position:relative; cursor:help; border-bottom:1px dashed #93c5fd; }
+  .pf .tip { position:absolute; left:0; top:22px; width:220px; background:#0f172a; color:#f1f5f9; font-family:'Pretendard Variable',sans-serif; font-size:12px; line-height:1.5; padding:8px 10px; border-radius:8px; z-index:2; box-shadow:0 8px 24px rgba(15,23,42,.18); }
+  .pf .card { background:rgba(248,250,252,.9); border-radius:16px; padding:16px 18px; }
+  .pf .layer-tag { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; margin-bottom:8px; }
+  .pf .sw { width:8px; height:8px; border-radius:2px; display:inline-block; }
+  .pf .logic .sw { background:#2563eb; } .pf .logic .layer-tag { color:#2563eb; }
+  .pf .phys .sw { background:#475569; } .pf .phys .layer-tag { color:#475569; }
+  .pf .bar { height:5px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
+  .pf .bar > i { display:block; height:100%; width:31%; background:#2563eb; }
+  .pf .row { display:flex; align-items:center; gap:8px; font-size:13px; }
+  .pf .more { font-size:13px; color:#475569; margin-top:10px; display:flex; align-items:center; gap:6px; }
+  .pf .tipbox { border-left:3px solid #2563eb; background:#f8fafc; border-radius:0 12px 12px 0; padding:12px 14px; font-size:13.5px; margin-top:14px; }
+  .pf .node { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11.5px; color:#475569; min-width:52px; text-align:center; }
+  .pf .node b { width:34px; height:34px; border-radius:10px; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:400; }
+  .pf .wire { flex:1; height:2px; background:#cbd5e1; position:relative; margin-bottom:18px; }
+  .pf .pkt { position:absolute; top:-4px; width:10px; height:10px; border-radius:50%; background:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,.15); }
+  .pf .lane { display:grid; grid-template-columns:64px 1fr; align-items:center; gap:10px; padding:12px 0; }
+  .pf .lane + .lane { border-top:1px dashed #e2e8f0; }
+  .pf .lane-name { font-size:12px; font-weight:600; }
+  .pf .msg { display:flex; gap:6px; flex-wrap:wrap; }
+  .pf .msg span { font-family:ui-monospace,Menlo,monospace; font-size:12px; padding:4px 8px; border-radius:8px; background:#eff6ff; color:#1d4ed8; }
+  .pf .msg span.dim { background:#f1f5f9; color:#94a3b8; }
+</style>
+
+<h2>Step 3 (TCP) 섹션을 두 가지 방식으로 그려봤어요</h2>
+<p class="subtitle">내용은 같아요. 위: 논리 층(파랑) / 아래: 물리 층(회색). 차이는 두 층을 '카드로 쌓느냐', '한 다이어그램의 두 레인으로 묶느냐'예요. 파란 칩(<b>3-way handshake</b>)엔 마우스를 올리면 한글 설명이 뜨는 툴팁이 붙는다고 보시면 돼요.</p>
+
+<div class="cards">
+
+  <!-- A: 카드 두 장 -->
+  <div class="card" data-choice="a-stacked" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="pf">
+        <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="label">경과</span><span class="ms">62ms</span></div>
+        <div class="bar" style="margin-bottom:22px"><i></i></div>
+
+        <span class="label">Step 3 · <span class="ms">+18ms</span></span>
+        <h1>서버와 연결 맺기</h1>
+        <p class="sub">이제 서버 주소를 알았으니, 말을 걸어도 되는지부터 확인해요.</p>
+
+        <div class="card logic" style="margin-bottom:10px">
+          <div class="layer-tag"><i class="sw"></i>논리 · 무슨 말이 오가나</div>
+          <p style="margin:0 0 10px;font-size:14px">폰과 서버가 짧은 신호 세 개를 주고받아요. 이걸 <span class="term">3-way handshake<span class="tip">TCP 연결을 열기 전에 양쪽이 '보낼 준비 됐어?'를 세 번의 신호로 확인하는 절차</span></span>라고 해요.</p>
+          <div class="msg"><span>SYN →</span><span>← SYN-ACK</span><span>ACK →</span></div>
+        </div>
+
+        <div class="card phys">
+          <div class="layer-tag"><i class="sw"></i>물리 · 실제로 뭐가 움직이나</div>
+          <p style="margin:0 0 6px;font-size:14px">신호 하나가 전파로 기지국까지 날아가고, 거기서부터는 광케이블 속 빛이 되어 데이터센터까지 달려요.</p>
+          <div class="more">＋ 더 깊이 보기 <span style="color:#94a3b8">(modem, 기지국, 코어망)</span></div>
+        </div>
+
+        <div class="tipbox"><b>실무에서는</b> · 서버가 포트를 안 열어두면 여기서 <span class="term">ECONNREFUSED</span>가 나요. <span class="term">keep-alive</span>로 연결을 재사용하면 이 18ms를 통째로 건너뛰어요.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 두 장의 카드</h3>
+      <p>논리 카드, 물리 카드를 위아래로 쌓아요. 읽기 편하고 모바일에서도 단순해요. 대신 두 층이 '같은 순간'이라는 연결감은 약간 덜해요.</p>
+    </div>
+  </div>
+
+  <!-- B: 두 레인 다이어그램 -->
+  <div class="card" data-choice="b-lanes" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="pf">
+        <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="label">경과</span><span class="ms">62ms</span></div>
+        <div class="bar" style="margin-bottom:22px"><i></i></div>
+
+        <span class="label">Step 3 · <span class="ms">+18ms</span></span>
+        <h1>서버와 연결 맺기</h1>
+        <p class="sub">이제 서버 주소를 알았으니, 말을 걸어도 되는지부터 확인해요.</p>
+
+        <div class="card" style="padding:6px 18px">
+          <div class="lane logic">
+            <span class="lane-name" style="color:#2563eb">논리</span>
+            <div class="msg"><span>SYN →</span><span class="dim">← SYN-ACK</span><span class="dim">ACK →</span></div>
+          </div>
+          <div class="lane phys">
+            <span class="lane-name" style="color:#475569">물리</span>
+            <div class="row" style="gap:0">
+              <div class="node"><b>📱</b>폰 modem</div>
+              <div class="wire"><span class="pkt" style="left:55%"></span></div>
+              <div class="node"><b>📡</b>기지국</div>
+              <div class="wire"></div>
+              <div class="node"><b>🏢</b>통신사 코어망</div>
+              <div class="wire"></div>
+              <div class="node"><b>🗄️</b>AWS 서울</div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:14px;margin:14px 0 0">지금 <span class="term">SYN</span> 하나가 전파를 타고 기지국으로 가는 중이에요. 스크롤하면 점이 이동하고, 위 레인의 다음 메시지가 켜져요.</p>
+        <div class="more">＋ 더 깊이 보기</div>
+
+        <div class="tipbox"><b>실무에서는</b> · 서버가 포트를 안 열어두면 여기서 <span class="term">ECONNREFUSED</span>가 나요. <span class="term">keep-alive</span>로 연결을 재사용하면 이 18ms를 통째로 건너뛰어요.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 두 레인 다이어그램</h3>
+      <p>한 박스 안에 논리 레인과 물리 레인을 겹쳐요. 스크롤에 맞춰 위에선 메시지가 켜지고 아래에선 점이 이동해서 '같은 순간'이 직관적으로 보여요. 만들기는 더 손이 가요.</p>
+    </div>
+  </div>
+
+</div>
+
+<h3 style="margin-top:36px">그리고 맨 마지막: 전체 워터폴</h3>
+<div class="mockup">
+  <div class="mockup-header">페이지 끝 · 막대를 누르면 해당 Step으로 스크롤</div>
+  <div class="mockup-body">
+    <div class="pf">
+      <span class="label">POST /api/orders · 총 <span class="ms">~200ms</span></span>
+      <h1>한눈에 다시 보기</h1>
+      <div style="display:grid;grid-template-columns:110px 1fr 54px;gap:8px 12px;align-items:center;font-size:13px;margin-top:14px">
+        <span>0 탭 → fetch</span><div style="position:relative;height:10px"><i style="position:absolute;left:0;width:3%;height:10px;border-radius:4px;background:#cbd5e1"></i></div><span class="ms" style="text-align:right">5</span>
+        <span>2 DNS</span><div style="position:relative;height:10px"><i style="position:absolute;left:3%;width:10%;height:10px;border-radius:4px;background:#cbd5e1"></i></div><span class="ms" style="text-align:right">20</span>
+        <span>3 TCP</span><div style="position:relative;height:10px"><i style="position:absolute;left:13%;width:9%;height:10px;border-radius:4px;background:#2563eb"></i></div><span class="ms" style="text-align:right">18</span>
+        <span>4 TLS</span><div style="position:relative;height:10px"><i style="position:absolute;left:22%;width:12%;height:10px;border-radius:4px;background:#cbd5e1"></i></div><span class="ms" style="text-align:right">24</span>
+        <span>5 서버 도착</span><div style="position:relative;height:10px"><i style="position:absolute;left:34%;width:6%;height:10px;border-radius:4px;background:#cbd5e1"></i></div><span class="ms" style="text-align:right">12</span>
+        <span>6 Node</span><div style="position:relative;height:10px"><i style="position:absolute;left:40%;width:8%;height:10px;border-radius:4px;background:#cbd5e1"></i></div><span class="ms" style="text-align:right">16</span>
+        <span>7 Postgres</span><div style="position:relative;height:10px"><i style="position:absolute;left:48%;width:27%;height:10px;border-radius:4px;background:#cbd5e1"></i></div><span class="ms" style="text-align:right">54</span>
+        <span>8 응답·렌더</span><div style="position:relative;height:10px"><i style="position:absolute;left:75%;width:25%;height:10px;border-radius:4px;background:#cbd5e1"></i></div><span class="ms" style="text-align:right">51</span>
+      </div>
+      <p class="sub" style="margin:14px 0 0">파란 막대 = 마우스를 올린 단계. 숫자는 시안용 임시값이에요.</p>
+    </div>
+  </div>
+</div>
