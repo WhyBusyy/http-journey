@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { steps } from '../../src/data/steps';
 
 const fontPx = (el: Element) => parseFloat(getComputedStyle(el).fontSize);
 
@@ -7,7 +8,7 @@ test('step time is large and sits right of the title on desktop', async ({ page 
   await page.goto('/');
   const ms = page.locator('#step-3 [data-step-ms]');
   const title = page.locator('#step-3 h2');
-  await expect(ms).toHaveText('+18ms');
+  await expect(ms).toHaveText(`+${steps[3].ms}ms`);
   expect(await ms.evaluate(fontPx)).toBeGreaterThanOrEqual(30);
   const m = (await ms.boundingBox())!;
   const t = (await title.boundingBox())!;

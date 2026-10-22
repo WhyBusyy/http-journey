@@ -9,7 +9,7 @@ const aws: PhysicalNode = { id: 'aws-seoul', label: 'AWS 서울', icon: 'Cloud' 
 
 const para = (...lines: string[]) => lines.join('\n\n');
 
-// ms는 임시값(provisional)이다. 측정 후 교체한다.
+// ms 근거는 docs/numbers.md에 있다(측정 + 공개 자료 + 표시된 추정).
 export const steps: Step[] = [
   {
     index: 0,
@@ -17,7 +17,7 @@ export const steps: Step[] = [
     title: '버튼을 누르는 순간',
     summary: '손가락이 화면에 닿고, 브라우저가 요청을 만들기 시작해요.',
     ms: 5,
-    provisional: true,
+    provisional: false,
     messages: [{ label: 'touch', direction: 'up' }, { label: 'click', direction: 'up' }, { label: 'fetch()', direction: 'up' }],
     nodes: [
       { id: 'touch-sensor', label: '터치 센서', icon: 'Hand' },
@@ -42,8 +42,8 @@ export const steps: Step[] = [
     slug: 'url-cache',
     title: '주소를 읽고 캐시부터 확인하기',
     summary: '보내기 전에, 이미 가진 답이 있는지 먼저 살펴봐요.',
-    ms: 3,
-    provisional: true,
+    ms: 1,
+    provisional: false,
     messages: [{ label: 'URL parse', direction: 'up' }, { label: 'cache lookup', direction: 'up' }],
     nodes: [ap, { id: 'phone-ram', label: '메모리(RAM)', icon: 'MemoryStick' }],
     body: para(
@@ -69,8 +69,8 @@ export const steps: Step[] = [
     slug: 'dns',
     title: '이름으로 주소 찾기',
     summary: '도메인 이름을 서버의 IP 주소로 바꿔요.',
-    ms: 20,
-    provisional: true,
+    ms: 36,
+    provisional: false,
     messages: [{ label: 'DNS query', direction: 'up' }, { label: 'DNS response', direction: 'down' }],
     nodes: [modem, tower, { id: 'carrier-dns', label: '통신사 DNS 서버', icon: 'Server' }],
     body: para(
@@ -97,8 +97,8 @@ export const steps: Step[] = [
     slug: 'tcp',
     title: '서버와 연결 맺기',
     summary: '말을 걸어도 되는지 서로 확인해요.',
-    ms: 18,
-    provisional: true,
+    ms: 36,
+    provisional: false,
     messages: [{ label: 'SYN', direction: 'up' }, { label: 'SYN-ACK', direction: 'down' }, { label: 'ACK', direction: 'up' }],
     nodes: [modem, tower, core, aws],
     body: para(
@@ -119,6 +119,7 @@ export const steps: Step[] = [
     ),
     sources: [
       { label: 'RFC 9293: TCP', url: 'https://www.rfc-editor.org/rfc/rfc9293' },
+      { label: 'Opensignal 한국 5G 측정 (RCR Wireless, 2019)', url: 'https://www.rcrwireless.com/20190621/5g/what-is-using-5g-really-like-opensignal-tests-korean-5g' },
       { label: 'RFC 9000: QUIC', url: 'https://www.rfc-editor.org/rfc/rfc9000' },
       { label: 'Node.js: http.globalAgent', url: 'https://nodejs.org/api/http.html#httpglobalagent' },
       { label: 'AWS: Security groups', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html' },
@@ -129,8 +130,8 @@ export const steps: Step[] = [
     slug: 'tls',
     title: '둘만 아는 암호 정하기',
     summary: '서버가 진짜인지 확인하고, 대화를 암호화할 키를 만들어요.',
-    ms: 24,
-    provisional: true,
+    ms: 48,
+    provisional: false,
     messages: [{ label: 'ClientHello', direction: 'up' }, { label: 'ServerHello', direction: 'down' }, { label: 'Finished', direction: 'up' }],
     nodes: [modem, tower, core, aws],
     body: para(
@@ -161,8 +162,8 @@ export const steps: Step[] = [
     slug: 'arrival',
     title: '서버 건물에 도착',
     summary: 'Load balancer가 요청을 받아 Node 서버 한 대에 넘겨요.',
-    ms: 12,
-    provisional: true,
+    ms: 20,
+    provisional: false,
     messages: [{ label: 'POST /api/orders', direction: 'up' }, { label: 'forward', direction: 'up' }],
     nodes: [
       { id: 'alb', label: 'ALB', icon: 'Network' },
@@ -201,8 +202,8 @@ export const steps: Step[] = [
     slug: 'node',
     title: 'Node.js가 일하는 시간',
     summary: 'event loop가 요청을 집어 들고 여러분의 코드를 실행해요.',
-    ms: 16,
-    provisional: true,
+    ms: 2,
+    provisional: false,
     messages: [{ label: 'poll', direction: 'up' }, { label: 'handler()', direction: 'up' }],
     nodes: [
       { id: 'cpu-core', label: 'CPU core', icon: 'Cpu' },
@@ -232,8 +233,8 @@ export const steps: Step[] = [
     slug: 'db',
     title: '데이터베이스에 다녀오기',
     summary: '주문을 저장하러 옆 서버의 Postgres에 다녀와요.',
-    ms: 54,
-    provisional: true,
+    ms: 8,
+    provisional: false,
     messages: [{ label: 'INSERT', direction: 'up' }, { label: 'COMMIT', direction: 'up' }, { label: 'result', direction: 'down' }],
     nodes: [
       { id: 'app-server', label: '앱 서버', icon: 'Server' },
@@ -257,6 +258,7 @@ export const steps: Step[] = [
       { label: 'PostgreSQL: Frontend/Backend Protocol', url: 'https://www.postgresql.org/docs/current/protocol.html' },
       { label: 'PostgreSQL: Write-Ahead Logging', url: 'https://www.postgresql.org/docs/current/wal-intro.html' },
       { label: 'node-postgres: Pooling', url: 'https://node-postgres.com/features/pooling' },
+      { label: 'AWS: EBS General Purpose SSD (gp3)', url: 'https://docs.aws.amazon.com/ebs/latest/userguide/general-purpose.html' },
       { label: 'AWS: Amazon RDS DB instance storage', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html' },
       {
         label: 'AWS: Multi-AZ DB instance deployments',
@@ -269,8 +271,8 @@ export const steps: Step[] = [
     slug: 'response',
     title: '답장이 화면에 그려지기까지',
     summary: '응답이 같은 길로 돌아오고, 브라우저가 화면을 다시 그려요.',
-    ms: 48,
-    provisional: true,
+    ms: 30,
+    provisional: false,
     messages: [{ label: '201 Created', direction: 'down' }, { label: 'JSON.parse', direction: 'down' }, { label: 'render', direction: 'down' }],
     nodes: [{ id: 'phone-screen', label: '폰 화면', icon: 'Monitor' }, { id: 'gpu', label: 'GPU', icon: 'Cpu' }, tower, core, aws],
     body: para(
