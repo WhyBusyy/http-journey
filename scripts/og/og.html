@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../node_modules/pretendard/dist/web/variable/pretendardvariable.css" />
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 630px; font-family: 'Pretendard Variable', sans-serif; background: #fff; color: #1e293b;
+         display: flex; flex-direction: column; justify-content: center; padding: 0 96px; word-break: keep-all; }
+  .label { font-size: 22px; letter-spacing: .2em; color: #94a3b8; font-weight: 600; }
+  h1 { margin-top: 20px; font-size: 92px; font-weight: 800; letter-spacing: -0.03em; color: #0f172a; }
+  h1 span { color: #2563eb; }
+  p { margin-top: 24px; font-size: 32px; color: #64748b; line-height: 1.45; }
+  .lane { margin-top: 56px; display: flex; align-items: center; gap: 0; }
+  .node { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #cbd5e1; background: #fff; }
+  .wire { flex: 1; height: 3px; background: #e2e8f0; position: relative; }
+  .dot { position: absolute; top: -6px; left: 55%; width: 15px; height: 15px; border-radius: 50%; background: #2563eb; box-shadow: 0 0 0 7px rgba(37,99,235,.15); }
+</style>
+</head>
+<body>
+  <div class="label">POST /api/orders</div>
+  <h1>요청 하나의 <span>186ms</span></h1>
+  <p>버튼을 누른 순간부터 화면이 바뀌기까지,<br />HTTP 요청이 지나가는 물리적·논리적 길을 따라가 봐요.</p>
+  <div class="lane"><div class="node"></div><div class="wire"></div><div class="node"></div><div class="wire"><span class="dot"></span></div><div class="node"></div><div class="wire"></div><div class="node"></div></div>
+</body>
+</html>

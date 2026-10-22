@@ -8,6 +8,8 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+// 배포 도메인이 정해지면 astro.config의 site로 절대 URL이 된다(링크 미리보기는 절대 URL을 선호한다)
+const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
 ---
 
 <html lang="ko">
@@ -18,6 +20,14 @@ const { title, description } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <slot />
