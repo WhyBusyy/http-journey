@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import type { Step } from '../../src/data/types';
-import { activeMessageIndex, computeTimeline, elapsedAt, packetPosition } from '../../src/lib/timeline';
+import { activeMessageIndex, computeTimeline, elapsedAt, packetPosition, unrollPath } from '../../src/lib/timeline';
 
 const steps = [{ ms: 5 }, { ms: 20 }, { ms: 18 }] as Step[];
 
@@ -28,24 +28,34 @@ test('activeMessageIndex splits evenly', () => {
   expect(activeMessageIndex(1, 3)).toBe(2);
 });
 
-test('packetPosition continuous vs snap (one outbound message)', () => {
-  expect(packetPosition(0.5, ['up'], 4, false)).toBeCloseTo(1.5);
-  expect(packetPosition(0.5, ['up'], 4, true)).toBe(2);
-  expect(packetPosition(-1, ['up'], 4, false)).toBe(0);
-  expect(packetPosition(9, ['up'], 4, true)).toBe(3);
+test('packetPosition moves one way along the path, continuous vs snap', () => {
+  expect(packetPosition(0.5, 4, false)).toBeCloseTo(1.5);
+  expect(packetPosition(0.5, 4, true)).toBe(2);
+  expect(packetPosition(-1, 4, false)).toBe(0);
+  expect(packetPosition(9, 4, true)).toBe(3);
 });
 
-test('packetPosition goes out and comes back for a round trip', () => {
-  const trip: ('up' | 'down')[] = ['up', 'down'];
-  expect(packetPosition(0.25, trip, 4, false)).toBeCloseTo(1.5); // 가는 중
-  expect(packetPosition(0.5, trip, 4, false)).toBeCloseTo(3); // 서버 도착, 답장 출발
-  expect(packetPosition(0.75, trip, 4, false)).toBeCloseTo(1.5); // 돌아오는 중
-  expect(packetPosition(1, trip, 4, false)).toBeCloseTo(0); // 폰에 도착
+const n = (id: string) => ({ id, label: id, icon: 'Server' });
+const ids = (path: { id: string }[]) => path.map((x) => x.id).join(',');
+
+test('unrollPath keeps a one-way message as is', () => {
+  const { path, segments } = unrollPath([n('a'), n('b'), n('c')], ['up']);
+  expect(ids(path)).toBe('a,b,c');
+  expect(segments).toEqual([{ start: 0, end: 2 }]);
 });
 
-test('packetPosition follows each message of a 3-way handshake', () => {
-  const hs: ('up' | 'down')[] = ['up', 'down', 'up'];
-  expect(packetPosition(1 / 3, hs, 4, false)).toBeCloseTo(3);
-  expect(packetPosition(2 / 3, hs, 4, false)).toBeCloseTo(0);
-  expect(packetPosition(1, hs, 4, false)).toBeCloseTo(3);
+test('unrollPath lays a round trip out left to right', () => {
+  const { path, segments } = unrollPath([n('a'), n('b'), n('c')], ['up', 'down']);
+  expect(ids(path)).toBe('a,b,c,b,a');
+  expect(segments).toEqual([{ start: 0, end: 2 }, { start: 2, end: 4 }]);
+});
+
+test('unrollPath lays a 3-way handshake out as one line', () => {
+  const { path } = unrollPath([n('a'), n('b'), n('c'), n('d')], ['up', 'down', 'up']);
+  expect(ids(path)).toBe('a,b,c,d,c,b,a,b,c,d');
+});
+
+test('unrollPath of a response-only step starts at the server side', () => {
+  const { path } = unrollPath([n('phone'), n('tower'), n('aws')], ['down']);
+  expect(ids(path)).toBe('aws,tower,phone');
 });

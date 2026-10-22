@@ -8,8 +8,8 @@ test('scrolling through a step advances message and packet', async ({ page }) =>
   const before = Number(await d.getAttribute('data-packet'));
   await page.mouse.wheel(0, 400);
   await page.waitForTimeout(200);
-  // 왕복 메시지가 있으면 점이 돌아오기도 하므로 '움직였다'만 확인한다(방향은 단위 테스트가 검증)
-  expect(Number(await d.getAttribute('data-packet'))).not.toBe(before);
+  // 경로를 한 줄로 펼쳤으므로 아래로 스크롤하면 점은 항상 오른쪽으로만 간다
+  expect(Number(await d.getAttribute('data-packet'))).toBeGreaterThan(before);
   expect(Number(await page.locator('[data-elapsed]').getAttribute('data-elapsed'))).toBeGreaterThan(0);
 });
 
@@ -27,4 +27,11 @@ test('no horizontal overflow at 360px', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
   await page.goto('/');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test('on mobile the current node is spelled out under the icon-only path', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await page.goto('/');
+  await page.locator('#step-3').scrollIntoViewIfNeeded();
+  await expect(page.locator('#step-3 [data-current-node]')).toHaveText(/^지금: .+/);
 });
