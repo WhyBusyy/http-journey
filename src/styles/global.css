@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+@theme {
+  --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  --color-dark-bg: #0a0a0a;
+  --color-dark-card: #141414;
+  --color-dark-border: #1f1f1f;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-slate-800 antialiased dark:bg-dark-bg dark:text-slate-200;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  *:focus-visible {
+    @apply rounded-sm outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-bg;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility card-base {
+  @apply rounded-2xl bg-slate-50/80 dark:bg-white/[0.04];
+}
+
+@utility text-accent {
+  @apply text-blue-600 dark:text-blue-400;
+}
