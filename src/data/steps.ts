@@ -66,10 +66,28 @@ export const steps: Step[] = [
     provisional: true,
     messages: [{ label: 'SYN', direction: 'up' }, { label: 'SYN-ACK', direction: 'down' }, { label: 'ACK', direction: 'up' }],
     nodes: [modem, tower, core, aws],
-    body: '(작성 예정)',
-    deeper: '(작성 예정)',
-    practice: '(작성 예정)',
-    sources: [{ label: 'RFC 9293: TCP', url: 'https://www.rfc-editor.org/rfc/rfc9293' }],
+    body: [
+      '서버의 IP 주소를 알았으니 이제 말을 걸 차례예요. 그런데 주문 내용을 바로 보내지는 않아요.',
+      '먼저 [[tcp]] 연결을 열어서 서로 주고받을 준비가 됐는지부터 확인해요. 폰이 [[syn]]을 보내고, 서버가 [[syn-ack]]로 답하고, 폰이 [[ack]]로 받았다고 알리면 연결이 열려요. 이 세 번의 인사를 [[3-way-handshake]]라고 불러요.',
+      '데이터는 한 바이트도 보내지 않았는데 신호가 한 번 왕복하는 시간, 즉 [[rtt]] 하나가 인사에 쓰였어요.',
+    ].join('\n\n'),
+    deeper: [
+      '물리적으로 따라가 보면, [[syn]] 하나는 폰 modem에서 전파가 되어 가까운 기지국으로 날아가요. 기지국부터는 유선이에요. 통신사 코어망을 지나 광케이블로 된 인터넷 백본을 타고 AWS 서울 리전의 데이터센터로 들어가요.',
+      '같은 도시 안이라도 무선 구간에서 순서를 기다리는 시간과 여러 장비를 거치는 시간이 쌓여요. 그래서 모바일에서는 이 왕복 한 번에 수십 ms가 걸리는 일이 흔해요.',
+      '목적지는 [[port|443번 port]]예요. 그 port에서는 [[alb]]가 연결을 기다리고 있다가 [[syn-ack]]를 돌려줘요.',
+      '[[http3]]는 [[tcp]] 대신 [[quic]]을 써요. TCP 인사와 다음 단계의 [[tls]] 인사를 따로 하면 왕복이 두 번 필요한데, QUIC은 둘을 묶어 한 번에 끝내요.',
+    ].join('\n\n'),
+    practice: [
+      'Node.js에서 fetch나 http.request가 [[econnrefused]]를 내면, 상대 컴퓨터까지는 갔는데 그 port에서 기다리는 프로그램이 없다는 뜻이에요. 서버가 [[syn]]에 [[rst]]로 답한 거예요. 서버 프로세스가 떠 있는지, port 번호가 맞는지부터 확인하세요.',
+      '[[etimedout]]은 [[syn]]에 아무 답도 없었다는 뜻이에요. AWS에서는 [[security-group]] 규칙이 빠진 경우가 대표적이에요. 허용되지 않은 트래픽은 서버에 닿지 않으니, 서버가 거절 신호조차 보낼 수 없어서 기다리다 시간이 다 돼요.',
+      '연결을 매번 새로 맺지 않으면 이 단계를 통째로 건너뛸 수 있어요. 브라우저는 같은 서버와 맺은 연결을 다시 쓰고, Node.js도 19 버전부터 기본 HTTP agent가 [[keep-alive]]를 켜 둬요.',
+    ].join('\n\n'),
+    sources: [
+      { label: 'RFC 9293: TCP', url: 'https://www.rfc-editor.org/rfc/rfc9293' },
+      { label: 'RFC 9000: QUIC', url: 'https://www.rfc-editor.org/rfc/rfc9000' },
+      { label: 'Node.js: http.globalAgent', url: 'https://nodejs.org/api/http.html#httpglobalagent' },
+      { label: 'AWS: Security groups', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html' },
+    ],
   },
   {
     index: 4,

@@ -13,7 +13,7 @@ const paragraphs = text.split(/\n\s*\n/).map(parseTerms);
 
 {
   paragraphs.map((segments) => (
-    <p class:list={['leading-relaxed', className]}>
+    <p class:list={['prose-p leading-relaxed', className]}>
       {segments.map((s) => (s.type === 'text' ? s.value : <Term termKey={s.key} label={s.label} />))}
     </p>
   ))

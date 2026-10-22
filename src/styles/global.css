@@ -44,16 +44,21 @@
   @apply text-blue-600 dark:text-blue-400;
 }
 
-/* 용어 칩 + 툴팁: JS 없이 hover(마우스)와 focus(탭·키보드)로 열린다 */
+/* 용어 칩 + 툴팁: JS 없이 hover(마우스)와 focus(탭·키보드)로 열린다.
+   툴팁은 칩이 아니라 문단(.prose-p)을 기준으로 위치해서, 칩이 화면 오른쪽 끝에 있어도 문단 폭을 넘지 않는다. */
+.prose-p {
+  @apply relative;
+}
+
 .term {
-  @apply relative cursor-help rounded-md border-b border-dashed border-blue-300 bg-blue-50 px-1.5 py-px font-mono text-[0.85em] text-blue-600 dark:border-blue-500/40 dark:bg-blue-500/10 dark:text-blue-400;
+  @apply cursor-help rounded-md border-b border-dashed border-blue-300 bg-blue-50 px-1.5 py-px font-mono text-[0.85em] text-blue-600 dark:border-blue-500/40 dark:bg-blue-500/10 dark:text-blue-400;
 }
 
 .term [role='tooltip'] {
-  @apply pointer-events-none invisible absolute left-0 top-full z-20 mt-2 w-60 rounded-lg bg-slate-900 px-3 py-2 font-sans text-xs leading-relaxed text-slate-100 opacity-0 shadow-lg transition-opacity dark:bg-slate-100 dark:text-slate-900;
+  @apply pointer-events-none absolute left-0 z-20 mt-1 hidden w-[min(18rem,100%)] rounded-lg bg-slate-900 px-3 py-2 font-sans text-xs leading-relaxed text-slate-100 shadow-lg dark:bg-slate-100 dark:text-slate-900;
 }
 
 .term:hover [role='tooltip'],
 .term:focus-within [role='tooltip'] {
-  @apply visible opacity-100;
+  @apply block;
 }

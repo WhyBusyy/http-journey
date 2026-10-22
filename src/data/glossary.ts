@@ -20,4 +20,12 @@ export const glossary: Record<string, { label: string; ko: string }> = {
   },
   ttfb: { label: 'TTFB', ko: 'Time To First Byte. 요청을 보낸 뒤 응답의 첫 바이트가 도착할 때까지 걸린 시간이에요.' },
   'keep-alive': { label: 'keep-alive', ko: '한 번 맺은 연결을 끊지 않고 다음 요청에도 다시 쓰는 방식이에요.' },
+  rtt: { label: 'RTT', ko: 'Round-Trip Time. 신호가 상대에게 갔다가 답이 돌아오기까지 걸리는 왕복 시간이에요.' },
+  port: { label: 'port', ko: '한 컴퓨터 안에서 어느 프로그램에게 온 데이터인지 가르는 번호예요. https는 보통 443번을 써요.' },
+  rst: { label: 'RST', ko: '"이 연결은 받을 수 없어요"라며 연결 시도를 끊어 버리는 TCP 신호예요.' },
+  http3: { label: 'HTTP/3', ko: 'TCP 대신 QUIC 위에서 동작하는 최신 HTTP 버전이에요.' },
+  quic: { label: 'QUIC', ko: 'UDP 위에서 연결 수립과 암호화를 한 번에 처리하는 전송 규칙이에요. HTTP/3가 이걸 써요.' },
+  econnrefused: { label: 'ECONNREFUSED', ko: '상대 컴퓨터까지는 닿았지만 그 port에서 기다리는 프로그램이 없어 연결이 거절됐다는 Node.js 에러예요.' },
+  etimedout: { label: 'ETIMEDOUT', ko: '정해진 시간 안에 상대에게서 아무 답이 오지 않았다는 Node.js 에러예요.' },
+  'security-group': { label: 'security group', ko: 'AWS에서 서버로 들어오고 나가는 트래픽을 규칙으로 허용하는 가상 방화벽이에요.' },
 };
