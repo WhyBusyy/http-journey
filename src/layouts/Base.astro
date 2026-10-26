@@ -8,8 +8,22 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-// 배포 도메인이 정해지면 astro.config의 site로 절대 URL이 된다(링크 미리보기는 절대 URL을 선호한다)
-const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
+// astro.config의 site로 절대 URL을 만든다(링크 미리보기와 검색엔진은 절대 URL을 선호한다)
+const ogImage = new URL('/og.png', Astro.site).href;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+// JSON 안의 '<'는 </script> 조기 종료를 막으려고 이스케이프한다
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'LearningResource',
+  name: title,
+  description,
+  url: canonical,
+  image: ogImage,
+  inLanguage: 'ko',
+  educationalLevel: 'beginner',
+  about: ['HTTP', 'DNS', 'TCP', 'TLS', '네트워크'],
+  author: { '@type': 'Person', name: '유병규', url: 'https://portfolio.whybusyy.com' },
+}).replace(/</g, '\\u003c');
 ---
 
 <html lang="ko">
@@ -20,7 +34,10 @@ const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="http-journey" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="ko_KR" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -28,6 +45,7 @@ const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={jsonLd} />
   </head>
   <body>
     <slot />

@@ -12,7 +12,7 @@ import { computeTimeline } from '../lib/timeline';
 const { entries, total } = computeTimeline(steps);
 ---
 
-<Base title={`요청 하나의 ${total}ms`} description="HTTP 요청 하나가 물리적·논리적으로 거치는 길을 따라가 봐요.">
+<Base title={`요청 하나의 ${total}ms — HTTP 요청이 지나가는 길`} description="HTTP 요청 하나가 물리적·논리적으로 거치는 길을 따라가 봐요.">
   <ProgressBar total={total} client:load />
   <Hero total={total} />
   <main>

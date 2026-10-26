@@ -11,7 +11,7 @@
 |---|---|---|
 | 프레임워크 | **Astro 7** (정적 출력) | 글이 주인공인 단일 페이지다. 본문은 빌드할 때 JS 없는 HTML로 만들고, 움직이는 부분만 JS를 보낸다. |
 | 인터랙션 | **React islands** | 두 레인 다이어그램과 상단 진행 바만 React로 hydrate한다. 다이어그램은 `client:visible`이라 화면에 보일 때 깨어난다. |
-| 스타일 | **Tailwind CSS 4** | 포트폴리오(whybusyy.vercel.app)의 디자인 토큰(Pretendard, slate, blue-600, 다크 모드)을 그대로 옮기기 쉽다. |
+| 스타일 | **Tailwind CSS 4** | 포트폴리오(portfolio.whybusyy.com)의 디자인 토큰(Pretendard, slate, blue-600, 다크 모드)을 그대로 옮기기 쉽다. |
 | 스크롤 연동 | **motion** (`useScroll`, `useReducedMotion`) | 스크롤 위치를 rAF 단위로 받아 다이어그램 진행값을 계산하고, 모션 줄이기 설정을 한 줄로 존중한다. |
 | island 간 상태 | **nanostores** | island끼리는 React 트리가 분리돼 있다. 경과 ms 하나만 공유하면 되므로 가장 작은 store를 골랐다. |
 | 아이콘 | **lucide-react** (필요한 것만 import) | 일관된 선 아이콘 세트. 전체 import 대신 쓰는 아이콘만 골라 번들을 줄인다. |
